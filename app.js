@@ -1,66 +1,42 @@
 document.addEventListener('DOMContentLoaded', () => {
-  console.log("Bienvenido a Todo Sobre Cloud - Operador Local 3.1 Pro");
+  
+  // Hash correcto para "Nil!WOce2013"
+  const TARGET_HASH = "cff32185ec328c60d2c60d412420d1404e6b25db28177caf245414edb7048134";
 
-  // Intersección Observer para animaciones al hacer scroll
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('show');
-      }
-    });
-  }, {
-    threshold: 0.15
-  });
+  const loginOverlay = document.getElementById('loginOverlay');
+  const mainContent = document.getElementById('mainContent');
+  const authInput = document.getElementById('authInput');
+  const authBtn = document.getElementById('authBtn');
+  const authError = document.getElementById('authError');
 
-  const hiddenElements = document.querySelectorAll('.hidden');
-  hiddenElements.forEach((el) => observer.observe(el));
+  // Funciones de Hashing (SHA-256)
+  async function sha256(message) {
+    const msgBuffer = new TextEncoder().encode(message);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  }
 
-  // Botón Explorar
-  const exploreBtn = document.getElementById('exploreBtn');
-  exploreBtn.addEventListener('click', () => {
-    document.getElementById('features').scrollIntoView({ behavior: 'smooth' });
-    
-    // Efecto de partículas al hacer click
-    createParticles(exploreBtn);
-  });
+  // Lógica de Autenticación
+  async function handleLogin() {
+    const pass = authInput.value;
+    if (!pass) return;
 
-  function createParticles(element) {
-    const rect = element.getBoundingClientRect();
-    for (let i = 0; i < 15; i++) {
-      const particle = document.createElement('div');
-      particle.style.position = 'absolute';
-      particle.style.width = '8px';
-      particle.style.height = '8px';
-      particle.style.background = i % 2 === 0 ? '#00f0ff' : '#a200ff';
-      particle.style.borderRadius = '50%';
-      particle.style.left = (rect.left + rect.width / 2) + 'px';
-      particle.style.top = (rect.top + rect.height / 2 + window.scrollY) + 'px';
-      particle.style.pointerEvents = 'none';
-      document.body.appendChild(particle);
-
-      const angle = Math.random() * Math.PI * 2;
-      const velocity = 50 + Math.random() * 50;
-      const tx = Math.cos(angle) * velocity;
-      const ty = Math.sin(angle) * velocity;
-
-      particle.animate([
-        { transform: 'translate(0, 0) scale(1)', opacity: 1 },
-        { transform: `translate(${tx}px, ${ty}px) scale(0)`, opacity: 0 }
-      ], {
-        duration: 600 + Math.random() * 400,
-        easing: 'cubic-bezier(0, .9, .57, 1)'
-      }).onfinish = () => particle.remove();
+    const hash = await sha256(pass);
+    if (hash === TARGET_HASH) {
+      // Contraseña correcta
+      loginOverlay.classList.add('hidden');
+      mainContent.classList.remove('hidden');
+    } else {
+      // Contraseña incorrecta
+      authError.classList.remove('hidden');
+      authInput.value = '';
     }
   }
 
-  // Smooth scroll para links del navbar
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-      e.preventDefault();
-      document.querySelector(this.getAttribute('href')).scrollIntoView({
-        behavior: 'smooth'
-      });
-    });
+  authBtn.addEventListener('click', handleLogin);
+  authInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') handleLogin();
   });
 
   // Chat UI Logic
@@ -83,14 +59,23 @@ document.addEventListener('DOMContentLoaded', () => {
     addMessage(text, 'user');
     chatInput.value = '';
 
-    // TODO: Connect to backend API (e.g., fetch('https://mi-ngrok-url.ngrok.io/api/chat'))
+    // TODO: Connect to backend API via Ngrok
     setTimeout(() => {
-      addMessage("Recibido. Estamos configurando la conexión con el Operador Local...", 'bot');
-    }, 1000);
+      addMessage("Comando enviado a la cola del Operador Local.", 'bot');
+    }, 600);
   });
 
   chatInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') sendBtn.click();
+  });
+
+  // Botón Encender PC
+  const wakeBtn = document.getElementById('wakeBtn');
+  wakeBtn.addEventListener('click', () => {
+    addMessage("/wakeonlan", 'user');
+    setTimeout(() => {
+      addMessage("Enviando paquete mágico (Wake-on-LAN) para encender el PC local...", 'bot');
+    }, 500);
   });
 
   // PWA Service Worker Registration

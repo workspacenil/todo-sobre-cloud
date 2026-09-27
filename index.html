@@ -3,96 +3,72 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Todo Sobre Cloud</title>
-  <meta name="description" content="Descubre el poder de la nube con animaciones y colores vibrantes.">
-  <meta name="theme-color" content="#020617">
+  <title>Operador Local</title>
+  <meta name="description" content="Interfaz de acceso remoto al Operador Local">
+  <meta name="theme-color" content="#000000">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3261/3261304.png">
   <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="cloud-bg">
-    <!-- Nubes animadas de fondo -->
-    <div class="cloud cloud1"></div>
-    <div class="cloud cloud2"></div>
-    <div class="cloud cloud3"></div>
+
+  <!-- Overlay de Login -->
+  <div id="loginOverlay" class="login-overlay">
+    <div class="login-box">
+      <h2>Acceso Restringido</h2>
+      <p>Introduce la contraseña maestra</p>
+      <input type="password" id="authInput" placeholder="Contraseña..." />
+      <button id="authBtn">Desbloquear</button>
+      <p id="authError" class="auth-error hidden">Credenciales incorrectas</p>
+    </div>
   </div>
 
-  <nav class="glass-nav">
-    <div class="logo">☁️ CloudVibe</div>
-    <ul class="nav-links">
-      <li><a href="#intro">Inicio</a></li>
-      <li><a href="#features">Características</a></li>
-      <li><a href="#future">El Futuro</a></li>
-    </ul>
-  </nav>
+  <!-- Contenido Principal -->
+  <div id="mainContent" class="main-content hidden">
+    
+    <nav class="glass-nav">
+      <div class="logo">✨ Operador Local</div>
+      <button id="wakeBtn" class="wake-btn">🔌 Encender PC</button>
+    </nav>
 
-  <main>
-    <section id="intro" class="hero">
-      <div class="hero-content">
-        <h1 class="bounce-in">Todo sobre <span class="gradient-text">Cloud</span></h1>
-        <p class="fade-in delay-1">Escala sin límites, despliega en segundos. La revolución digital ocurre en las nubes.</p>
-        <button class="cta-button fade-in delay-2" id="exploreBtn">Explorar la Nube</button>
-      </div>
-      <div class="hero-image float-anim">
+    <main class="dashboard">
+      <!-- Chat Central -->
+      <section class="chat-section">
         <div class="chat-container">
           <div class="chat-header">
             <span class="status-dot blink"></span>
-            <h3>Agente 3.1 Pro</h3>
+            <h3>Agente Gemini 3.1 Pro</h3>
           </div>
           <div class="chat-messages" id="chatMessages">
             <div class="message bot fade-in delay-fast">
-              <p>¡Hola! Soy tu Operador Local impulsado por IA. ¿En qué te puedo ayudar hoy?</p>
+              <p>Hola, he inicializado el sistema remoto. Tienes conexión directa con tu PC. ¿Qué necesitas?</p>
             </div>
           </div>
           <div class="chat-input-area">
-            <input type="text" id="chatInput" placeholder="Escribe un mensaje..." autocomplete="off">
+            <input type="text" id="chatInput" placeholder="Pregunta algo o usa un comando..." autocomplete="off">
             <button id="sendBtn" class="send-btn">➤</button>
-            <button id="voiceBtn" class="voice-btn">🎙️</button>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section id="features" class="features hidden">
-      <h2 class="section-title">¿Por qué Cloud?</h2>
-      <div class="cards-container">
-        <div class="glass-card card-hover" style="--accent: #ff007f;">
-          <div class="card-icon">⚡</div>
-          <h3>Velocidad</h3>
-          <p>Despliegues ultrarrápidos a nivel global en cuestión de segundos.</p>
+      <!-- Panel de Comandos -->
+      <section class="commands-section">
+        <div class="commands-container glass-panel">
+          <h3>📋 Comandos Rápidos</h3>
+          <ul class="cmd-list">
+            <li><span class="cmd-badge">/pantalla</span><span class="cmd-desc">Captura de tu monitor en tiempo real.</span></li>
+            <li><span class="cmd-badge">/sys</span><span class="cmd-desc">Ver estado de memoria, CPU y GPU.</span></li>
+            <li><span class="cmd-badge">/abrir [URL]</span><span class="cmd-desc">Abre una web visible en el PC.</span></li>
+            <li><span class="cmd-badge">/apagar</span><span class="cmd-desc">Apaga el PC en 30 segundos.</span></li>
+            <li><span class="cmd-badge">/mails</span><span class="cmd-desc">Consulta tus correos no leídos.</span></li>
+            <li><span class="cmd-badge">/agenda</span><span class="cmd-desc">Revisa tus próximos eventos de Google.</span></li>
+          </ul>
         </div>
-        <div class="glass-card card-hover" style="--accent: #00f0ff;">
-          <div class="card-icon">🛡️</div>
-          <h3>Seguridad</h3>
-          <p>Protección de datos de nivel militar y copias de seguridad automatizadas.</p>
-        </div>
-        <div class="glass-card card-hover" style="--accent: #a200ff;">
-          <div class="card-icon">📈</div>
-          <h3>Escalabilidad</h3>
-          <p>Crece de 0 a 100 sin preocuparte por la infraestructura física.</p>
-        </div>
-      </div>
-    </section>
+      </section>
+    </main>
 
-    <section id="future" class="future hidden">
-      <div class="future-content">
-        <h2>El Futuro es <span class="gradient-text-alt">Ahora</span></h2>
-        <p>No te quedes atrás en servidores on-premise. Da el salto al Cloud y moderniza tu arquitectura.</p>
-        <div class="floating-icons">
-          <span class="float-icon icon-1">🌐</span>
-          <span class="float-icon icon-2">🔒</span>
-          <span class="float-icon icon-3">💻</span>
-          <span class="float-icon icon-4">🚀</span>
-        </div>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <p>Creado por el Agente 3.1 Pro 🚀 - Operador Local</p>
-  </footer>
+  </div>
 
   <script src="app.js"></script>
 </body>
