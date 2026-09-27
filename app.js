@@ -62,4 +62,43 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   });
+
+  // Chat UI Logic
+  const chatInput = document.getElementById('chatInput');
+  const sendBtn = document.getElementById('sendBtn');
+  const chatMessages = document.getElementById('chatMessages');
+
+  function addMessage(text, sender) {
+    const msgDiv = document.createElement('div');
+    msgDiv.classList.add('message', sender, 'fade-in');
+    msgDiv.innerHTML = `<p>${text}</p>`;
+    chatMessages.appendChild(msgDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  sendBtn.addEventListener('click', () => {
+    const text = chatInput.value.trim();
+    if (!text) return;
+    
+    addMessage(text, 'user');
+    chatInput.value = '';
+
+    // TODO: Connect to backend API (e.g., fetch('https://mi-ngrok-url.ngrok.io/api/chat'))
+    setTimeout(() => {
+      addMessage("Recibido. Estamos configurando la conexión con el Operador Local...", 'bot');
+    }, 1000);
+  });
+
+  chatInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') sendBtn.click();
+  });
+
+  // PWA Service Worker Registration
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then(reg => console.log('Service Worker Registrado!', reg.scope))
+        .catch(err => console.error('Error registrando SW', err));
+    });
+  }
 });

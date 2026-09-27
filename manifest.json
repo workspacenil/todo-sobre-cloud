@@ -1,0 +1,16 @@
+{
+  "name": "Cloud Agent",
+  "short_name": "CloudAgent",
+  "description": "Tu asistente IA personal alojado en la nube local",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#00f0ff",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3261/3261304.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
