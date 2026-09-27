@@ -24,14 +24,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const hash = await sha256(pass);
     if (hash === TARGET_HASH) {
-      // Contraseña correcta
-      loginOverlay.classList.add('hidden');
-      mainContent.classList.remove('hidden');
+      // Contraseña correcta (Administrador)
+      localStorage.setItem('session_role', 'admin');
+      unlockInterface('admin');
     } else {
       // Contraseña incorrecta
       authError.classList.remove('hidden');
       authInput.value = '';
     }
+  }
+
+  function unlockInterface(role) {
+    loginOverlay.classList.add('hidden');
+    mainContent.classList.remove('hidden');
+    
+    // Preparado para el futuro sistema de roles
+    if (role === 'admin') {
+      console.log("Sesión iniciada como Administrador.");
+      // Aquí se podrían habilitar controles exclusivos de admin
+    } else if (role === 'reader') {
+      console.log("Sesión iniciada como Lector.");
+      // Aquí se ocultaría el chat o se pondría en solo lectura
+    }
+  }
+
+  // Comprobar si ya existe una sesión guardada
+  const savedRole = localStorage.getItem('session_role');
+  if (savedRole) {
+    unlockInterface(savedRole);
   }
 
   authBtn.addEventListener('click', handleLogin);
