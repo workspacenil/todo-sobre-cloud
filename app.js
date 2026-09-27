@@ -1,13 +1,25 @@
 document.addEventListener('DOMContentLoaded', () => {
-  
-  // Hash correcto para "Nil!WOce2013"
   const TARGET_HASH = "cff32185ec328c60d2c60d412420d1404e6b25db28177caf245414edb7048134";
+  const NGROK_API_URL = "https://tu-dominio.ngrok-free.app/api/chat"; // CONFIGURA ESTO
 
   const loginOverlay = document.getElementById('loginOverlay');
   const mainContent = document.getElementById('mainContent');
   const authInput = document.getElementById('authInput');
   const authBtn = document.getElementById('authBtn');
   const authError = document.getElementById('authError');
+
+  // Sidebar elements
+  const menuBtn = document.getElementById('menuBtn');
+  const sidebar = document.getElementById('sidebar');
+  const sidebarOverlay = document.getElementById('sidebarOverlay');
+  const closeSidebar = document.getElementById('closeSidebar');
+  const wakeBtn = document.getElementById('wakeBtn');
+  const themeToggleBtn = document.getElementById('themeToggleBtn');
+
+  // Chat elements
+  const chatInput = document.getElementById('chatInput');
+  const sendBtn = document.getElementById('sendBtn');
+  const chatMessages = document.getElementById('chatMessages');
 
   // Funciones de Hashing (SHA-256)
   async function sha256(message) {
@@ -17,18 +29,14 @@ document.addEventListener('DOMContentLoaded', () => {
     return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
   }
 
-  // Lógica de Autenticación
   async function handleLogin() {
     const pass = authInput.value;
     if (!pass) return;
-
     const hash = await sha256(pass);
     if (hash === TARGET_HASH) {
-      // Contraseña correcta (Administrador)
       localStorage.setItem('session_role', 'admin');
       unlockInterface('admin');
     } else {
-      // Contraseña incorrecta
       authError.classList.remove('hidden');
       authInput.value = '';
     }
@@ -37,95 +45,113 @@ document.addEventListener('DOMContentLoaded', () => {
   function unlockInterface(role) {
     loginOverlay.classList.add('hidden');
     mainContent.classList.remove('hidden');
-    
-    // Preparado para el futuro sistema de roles
-    if (role === 'admin') {
-      console.log("Sesión iniciada como Administrador.");
-      // Aquí se podrían habilitar controles exclusivos de admin
-    } else if (role === 'reader') {
-      console.log("Sesión iniciada como Lector.");
-      // Aquí se ocultaría el chat o se pondría en solo lectura
-    }
   }
 
-  // Comprobar si ya existe una sesión guardada
   const savedRole = localStorage.getItem('session_role');
-  if (savedRole) {
-    unlockInterface(savedRole);
-  }
+  if (savedRole) unlockInterface(savedRole);
 
   authBtn.addEventListener('click', handleLogin);
   authInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') handleLogin();
   });
 
-  // Chat UI Logic
-  const chatInput = document.getElementById('chatInput');
-  const sendBtn = document.getElementById('sendBtn');
-  const chatMessages = document.getElementById('chatMessages');
+  // Sidebar Logic
+  function toggleSidebar() {
+    sidebar.classList.toggle('open');
+    sidebarOverlay.classList.toggle('hidden');
+  }
 
-  function addMessage(text, sender) {
+  menuBtn.addEventListener('click', toggleSidebar);
+  closeSidebar.addEventListener('click', toggleSidebar);
+  sidebarOverlay.addEventListener('click', toggleSidebar);
+
+  // Theme Toggle
+  themeToggleBtn.addEventListener('click', () => {
+    document.body.classList.toggle('light-mode');
+  });
+
+  // Chat Logic
+  function addMessage(text, isUser = false) {
     const msgDiv = document.createElement('div');
-    msgDiv.classList.add('message', sender, 'fade-in');
-    msgDiv.innerHTML = `<p>${text}</p>`;
+    msgDiv.classList.add('message', isUser ? 'user' : 'bot', 'fade-in');
+    
+    if (isUser) {
+      msgDiv.innerHTML = `<div class="msg-content"><p>${text}</p></div>`;
+    } else {
+      msgDiv.innerHTML = `
+        <div class="msg-avatar">✨</div>
+        <div class="msg-content"><p>${text}</p></div>
+      `;
+    }
+    
     chatMessages.appendChild(msgDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  async function sendMessageToApi(message) {
+    try {
+      const response = await fetch(NGROK_API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true' // Importante para ngrok
+        },
+        body: JSON.stringify({ message, sender: 'PWA-User' })
+      });
+      
+      if (!response.ok) throw new Error("Error HTTP " + response.status);
+      
+      const data = await response.json();
+      addMessage(data.reply || "Hecho.", false);
+    } catch (error) {
+      addMessage("⚠️ Error conectando con el Operador Local. ¿Está encendido Ngrok?", false);
+      console.error(error);
+    }
   }
 
   sendBtn.addEventListener('click', () => {
     const text = chatInput.value.trim();
     if (!text) return;
     
-    addMessage(text, 'user');
+    addMessage(text, true);
     chatInput.value = '';
-
-    // TODO: Connect to backend API via Ngrok
-    setTimeout(() => {
-      addMessage("Comando enviado a la cola del Operador Local.", 'bot');
-    }, 600);
+    
+    // Llamada a API real
+    sendMessageToApi(text);
   });
 
   chatInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') sendBtn.click();
   });
 
-  // Botón Encender PC
-  const wakeBtn = document.getElementById('wakeBtn');
   wakeBtn.addEventListener('click', () => {
-    addMessage("/wakeonlan", 'user');
-    setTimeout(() => {
-      addMessage("Enviando paquete mágico (Wake-on-LAN) para encender el PC local...", 'bot');
-    }, 500);
+    toggleSidebar();
+    addMessage("/wakeonlan", true);
+    sendMessageToApi("/wakeonlan");
   });
 
-  // Cargar lista dinámica de comandos
+  // Cargar comandos
   async function loadCommands() {
     try {
       const res = await fetch('commands.json');
-      if (!res.ok) throw new Error("No se pudo cargar");
+      if (!res.ok) return;
       const commands = await res.json();
       const cmdList = document.getElementById('cmdList');
-      cmdList.innerHTML = ''; // Limpiar
-      
+      cmdList.innerHTML = '';
       commands.forEach(cmd => {
         const li = document.createElement('li');
-        li.innerHTML = `<span class="cmd-badge">${cmd.command}</span><span class="cmd-desc">${cmd.description}</span>`;
+        li.innerHTML = `<span class="cmd-badge">${cmd.command}</span><div class="cmd-desc">${cmd.description}</div>`;
         cmdList.appendChild(li);
       });
     } catch (e) {
       console.error("Error cargando comandos:", e);
     }
   }
-
-  // Cargar comandos al iniciar
   loadCommands();
 
-  // PWA Service Worker Registration
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .then(reg => console.log('Service Worker Registrado!', reg.scope))
-        .catch(err => console.error('Error registrando SW', err));
+      navigator.serviceWorker.register('./sw.js').catch(console.error);
     });
   }
 });
