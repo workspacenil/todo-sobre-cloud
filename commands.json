@@ -1,0 +1,22 @@
+[
+  { "command": "/ayuda", "description": "Muestra la ayuda completa del sistema." },
+  { "command": "/apagar", "description": "Apaga el PC en 30 segundos (con opción a cancelar)." },
+  { "command": "/apagar-ya", "description": "Apaga el PC de inmediato, sin cuenta atrás." },
+  { "command": "/cancelar", "description": "Cancela cualquier orden de apagado o reinicio activa." },
+  { "command": "/reiniciar", "description": "Reinicia el equipo en 30 segundos." },
+  { "command": "/suspender", "description": "Pone el PC en estado de suspensión." },
+  { "command": "/sys", "description": "Muestra el uso de RAM y VRAM (GPU) en tiempo real." },
+  { "command": "/clear", "description": "Borra la memoria de conversación de la IA (limpia el contexto)." },
+  { "command": "/cmd [código]", "description": "Ejecuta cualquier comando en PowerShell de Windows." },
+  { "command": "/pantalla", "description": "Captura y envía una foto en directo de todo tu monitor." },
+  { "command": "/web [url]", "description": "Captura una página web en alta resolución sin abrirla." },
+  { "command": "/escritorio next", "description": "Cambia al siguiente escritorio virtual en Windows." },
+  { "command": "/abrir [url]", "description": "Abre cualquier enlace web o aplicación en la pantalla de tu PC." },
+  { "command": "/gh [comando]", "description": "Ejecuta la CLI de GitHub (ej. /gh repo list)." },
+  { "command": "/mails", "description": "Revisa tu bandeja de Gmail y muestra los correos no leídos." },
+  { "command": "/leermail [id]", "description": "Abre el contenido completo de un correo específico." },
+  { "command": "/borrador [id]", "description": "Crea un borrador de respuesta inteligente en Gmail." },
+  { "command": "/enviarmail [id]", "description": "Envía directamente una respuesta de correo desde el chat." },
+  { "command": "/agenda", "description": "Comprueba tus próximos eventos y reuniones de Google Calendar." },
+  { "command": "/marcar leidos", "description": "Marca todos tus emails pendientes de Gmail como leídos." }
+]

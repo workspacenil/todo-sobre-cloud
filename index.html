@@ -26,19 +26,17 @@
 
   <!-- Contenido Principal -->
   <div id="mainContent" class="main-content hidden">
-    
-    <nav class="glass-nav">
-      <div class="logo">✨ Operador Local</div>
-      <button id="wakeBtn" class="wake-btn">🔌 Encender PC</button>
-    </nav>
 
     <main class="dashboard">
       <!-- Chat Central -->
       <section class="chat-section">
         <div class="chat-container">
           <div class="chat-header">
-            <span class="status-dot blink"></span>
-            <h3>Agente Gemini 3.1 Pro</h3>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span class="status-dot blink"></span>
+              <h3>Agente Gemini 3.1 Pro</h3>
+            </div>
+            <button id="wakeBtn" class="wake-btn" style="margin-left: auto;">🔌 Encender PC</button>
           </div>
           <div class="chat-messages" id="chatMessages">
             <div class="message bot fade-in delay-fast">
@@ -55,14 +53,9 @@
       <!-- Panel de Comandos -->
       <section class="commands-section">
         <div class="commands-container glass-panel">
-          <h3>📋 Comandos Rápidos</h3>
-          <ul class="cmd-list">
-            <li><span class="cmd-badge">/pantalla</span><span class="cmd-desc">Captura de tu monitor en tiempo real.</span></li>
-            <li><span class="cmd-badge">/sys</span><span class="cmd-desc">Ver estado de memoria, CPU y GPU.</span></li>
-            <li><span class="cmd-badge">/abrir [URL]</span><span class="cmd-desc">Abre una web visible en el PC.</span></li>
-            <li><span class="cmd-badge">/apagar</span><span class="cmd-desc">Apaga el PC en 30 segundos.</span></li>
-            <li><span class="cmd-badge">/mails</span><span class="cmd-desc">Consulta tus correos no leídos.</span></li>
-            <li><span class="cmd-badge">/agenda</span><span class="cmd-desc">Revisa tus próximos eventos de Google.</span></li>
+          <h3>📋 Comandos Disponibles</h3>
+          <ul class="cmd-list" id="cmdList">
+            <!-- Cargados dinámicamente desde app.js -->
           </ul>
         </div>
       </section>

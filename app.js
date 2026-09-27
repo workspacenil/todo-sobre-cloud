@@ -78,6 +78,28 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 500);
   });
 
+  // Cargar lista dinámica de comandos
+  async function loadCommands() {
+    try {
+      const res = await fetch('commands.json');
+      if (!res.ok) throw new Error("No se pudo cargar");
+      const commands = await res.json();
+      const cmdList = document.getElementById('cmdList');
+      cmdList.innerHTML = ''; // Limpiar
+      
+      commands.forEach(cmd => {
+        const li = document.createElement('li');
+        li.innerHTML = `<span class="cmd-badge">${cmd.command}</span><span class="cmd-desc">${cmd.description}</span>`;
+        cmdList.appendChild(li);
+      });
+    } catch (e) {
+      console.error("Error cargando comandos:", e);
+    }
+  }
+
+  // Cargar comandos al iniciar
+  loadCommands();
+
   // PWA Service Worker Registration
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
